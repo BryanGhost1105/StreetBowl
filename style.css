@@ -1,0 +1,500 @@
+/**
+ * StreetBowl Application
+ * File: style.css
+ * Description: Global Stylesheet. Contains custom CSS variables, keyframe animations, 
+ * scroll-triggered reveal classes, and glassmorphism utility extensions.
+ */
+:root {
+  --color-primary: #f97316;
+  --color-primary-hover: #ea580c;
+  --color-dark: #09090b;
+  --color-surface: #ffffff;
+  --color-muted: #4b5563;
+  --color-border: #e4e4e7;
+  --color-background: #fafafa;
+  --font-sans: 'Geist', sans-serif;
+  --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+  --shadow-float: 0 20px 40px -15px rgba(249, 115, 22, 0.15);
+
+  /* Custom easing curves for premium feel */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-out-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Base responsive reset and layout defaults */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--color-background);
+}
+
+img, picture, video, svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+.font-sans { font-family: var(--font-sans); }
+.text-primary { color: var(--color-primary); }
+.text-dark { color: var(--color-dark); }
+.text-muted { color: var(--color-muted); }
+.bg-primary { background-color: var(--color-primary); }
+.bg-dark { background-color: var(--color-dark); }
+.bg-dark\/90 { background-color: rgb(9 9 11 / 0.9); }
+.bg-background { background-color: var(--color-background); }
+.bg-background\/90 { background-color: rgb(250 250 250 / 0.9); }
+.border-primary { border-color: var(--color-primary); }
+.border-border { border-color: var(--color-border); }
+.shadow-subtle { box-shadow: var(--shadow-subtle); }
+.shadow-float { box-shadow: var(--shadow-float); }
+.hover\:text-primary:hover { color: var(--color-primary); }
+.hover\:text-dark:hover { color: var(--color-dark); }
+.hover\:bg-primary:hover,
+.hover\:bg-primary-hover:hover { background-color: var(--color-primary-hover); }
+.hover\:shadow-subtle:hover { box-shadow: var(--shadow-subtle); }
+.group:hover .group-hover\:text-primary { color: var(--color-primary); }
+.group:hover .group-hover\:border-primary { border-color: var(--color-primary); }
+.focus\:ring-primary\/20:focus { --tw-ring-color: rgb(249 115 22 / 0.2); }
+
+.animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-delayed { animation: float 6s ease-in-out 2s infinite; }
+.animate-float-slow { animation: float 8s ease-in-out 1s infinite; }
+
+      @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+      }
+      @keyframes slideUp {
+          from { opacity: 0; transform: translateY(1.5rem); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-0.75rem); }
+      }
+      @keyframes panMap {
+          0% { transform: rotateX(60deg) rotateZ(-45deg) translate3d(0, 0, 0); }
+          100% { transform: rotateX(60deg) rotateZ(-45deg) translate3d(-10%, -10%, 0); }
+      }
+
+      /* Scroll-triggered entrance animations */
+      @keyframes scrollFadeInUp {
+          from {
+              opacity: 0;
+              transform: translateY(2rem);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      @keyframes scrollFadeInLeft {
+          from {
+              opacity: 0;
+              transform: translateX(-2rem);
+          }
+          to {
+              opacity: 1;
+              transform: translateX(0);
+          }
+      }
+
+      @keyframes scrollFadeInRight {
+          from {
+              opacity: 0;
+              transform: translateX(2rem);
+          }
+          to {
+              opacity: 1;
+              transform: translateX(0);
+          }
+      }
+
+      @keyframes scrollFadeIn {
+          from {
+              opacity: 0;
+          }
+          to {
+              opacity: 1;
+          }
+      }
+
+      @keyframes scrollScale {
+          from {
+              opacity: 0;
+              transform: scale(0.95);
+          }
+          to {
+              opacity: 1;
+              transform: scale(1);
+          }
+      }
+
+      /* Base scroll animation element — invisible until triggered */
+      .scroll-animate {
+          opacity: 0;
+          transform: translateY(2rem);
+          will-change: opacity, transform;
+      }
+
+      /* Applied when element enters viewport */
+      .scroll-animate.animate {
+          animation: scrollFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      /* Variant: Left entrance */
+      .scroll-animate-left.animate {
+          animation: scrollFadeInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      /* Variant: Right entrance */
+      .scroll-animate-right.animate {
+          animation: scrollFadeInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      /* Variant: Fade only */
+      .scroll-animate-fade.animate {
+          animation: scrollFadeIn 0.5s ease-out forwards;
+      }
+
+      /* Variant: Scale-in */
+      .scroll-animate-scale.animate {
+          animation: scrollScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      /* Stagger timing for grouped elements */
+      .scroll-stagger-1 { --scroll-delay: 0s; }
+      .scroll-stagger-2 { --scroll-delay: 0.1s; }
+      .scroll-stagger-3 { --scroll-delay: 0.2s; }
+      .scroll-stagger-4 { --scroll-delay: 0.3s; }
+      .scroll-stagger-5 { --scroll-delay: 0.4s; }
+      .scroll-stagger-6 { --scroll-delay: 0.5s; }
+
+      .scroll-animate.animate[style*="--scroll-delay"] {
+          animation-delay: var(--scroll-delay);
+      }
+
+      /* Respect user motion preferences */
+      @media (prefers-reduced-motion: reduce) {
+          .scroll-animate,
+          .scroll-animate-left,
+          .scroll-animate-right,
+          .scroll-animate-fade,
+          .scroll-animate-scale {
+              opacity: 1;
+              transform: none;
+          }
+
+          .scroll-animate.animate,
+          .scroll-animate-left.animate,
+          .scroll-animate-right.animate,
+          .scroll-animate-fade.animate,
+          .scroll-animate-scale.animate {
+              animation: none;
+          }
+      }
+
+      .glass-panel {
+          background-color: rgba(255, 255, 255, 0.75);
+          backdrop-filter: blur(16px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+          box-shadow: inset 0 -1px 0 0 rgba(0,0,0,0.02);
+      }
+
+      .glass-card {
+          background-color: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.6);
+          box-shadow: var(--shadow-subtle), inset 0 1px 0 rgba(255,255,255,0.8);
+      }
+
+      .glass-pill {
+          background-color: rgba(255, 255, 255, 0.45);
+          backdrop-filter: blur(16px) saturate(180%);
+          -webkit-backdrop-filter: blur(16px) saturate(180%);
+          border: 1px solid rgba(255, 255, 255, 0.65);
+          box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.9), 0 4px 16px -4px rgba(0, 0, 0, 0.1);
+      }
+
+      .glass-pill-dark {
+          background-color: rgba(9, 9, 11, 0.5);
+          backdrop-filter: blur(16px) saturate(180%);
+          -webkit-backdrop-filter: blur(16px) saturate(180%);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 4px 16px -4px rgba(0, 0, 0, 0.3);
+          color: white;
+      }
+
+
+      .map-flooring {
+          background-image:
+              linear-gradient(to right, rgba(249, 115, 22, 0.35) 1.5px, transparent 1.5px),
+              linear-gradient(to bottom, rgba(249, 115, 22, 0.35) 1.5px, transparent 1.5px);
+          background-size: 3rem 3rem;
+          transform-style: preserve-3d;
+          animation: panMap 40s linear infinite alternate;
+      }
+
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+#mobile-menu {
+  max-height: 100dvh;
+  overflow-y: auto;
+}
+
+
+/* Navigation link hover effect with proper media query */
+@media (hover: hover) and (pointer: fine) {
+  .nav-link {
+    transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out);
+  }
+
+  .nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--color-dark);
+  }
+}
+
+/* Smooth transitions for all buttons */
+.btn-primary {
+  transition: background-color 160ms var(--ease-out), 
+              box-shadow 160ms var(--ease-out), 
+              transform 160ms var(--ease-out);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+/* Category cards with smooth hover effect */
+@media (hover: hover) and (pointer: fine) {
+  .category-card {
+    transition: transform 300ms var(--ease-out-smooth), 
+                box-shadow 300ms var(--ease-out-smooth);
+  }
+
+  .category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* Vendor card hover effects */
+@media (hover: hover) and (pointer: fine) {
+  .vendor-card {
+    transition: box-shadow 250ms var(--ease-out), 
+                transform 250ms var(--ease-out);
+  }
+
+  .vendor-card:hover {
+    box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+/* Testimonial cards with hover elevation */
+@media (hover: hover) and (pointer: fine) {
+  .testimonial-card {
+    transition: box-shadow 250ms var(--ease-out), 
+                transform 250ms var(--ease-out);
+  }
+
+  .testimonial-card:hover {
+    box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+}
+
+/* Link interactions with smooth color transition */
+@media (hover: hover) and (pointer: fine) {
+  .link-smooth {
+    transition: color 200ms var(--ease-out);
+  }
+
+  .link-smooth:hover {
+    color: var(--color-primary);
+  }
+}
+
+/* Input field smooth focus state */
+input[type="text"],
+input[type="email"],
+.input-field {
+  transition: border-color 200ms var(--ease-out), 
+              box-shadow 200ms var(--ease-out), 
+              background-color 200ms var(--ease-out);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+.input-field:focus {
+  border-color: var(--color-primary);
+  box-shadow: inset 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+/* Smooth button transitions */
+button {
+  transition: background-color 160ms var(--ease-out), 
+              color 160ms var(--ease-out), 
+              transform 160ms var(--ease-out),
+              box-shadow 160ms var(--ease-out);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Glass pill smooth interactions */
+@media (hover: hover) and (pointer: fine) {
+  .glass-pill,
+  .glass-pill-dark {
+    transition: background-color 200ms var(--ease-out), 
+                backdrop-filter 200ms var(--ease-out);
+  }
+
+  .glass-pill:hover,
+  .glass-pill-dark:hover {
+    background-color: rgba(255, 255, 255, 0.55);
+  }
+}
+
+/* Icon smooth transitions */
+iconify-icon {
+  transition: transform 200ms var(--ease-out), 
+              color 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover iconify-icon {
+    transform: translateY(-2px);
+  }
+}
+
+/* Anchor smooth interactions */
+a {
+  transition: color 200ms var(--ease-out);
+}
+
+/* Hero CTA (white pill) - matches original hero style but with refined timing */
+.hero-cta {
+  background-color: var(--color-surface);
+  color: var(--color-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 18px 40px -18px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.6);
+  transition: background-color 260ms var(--ease-out), transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-cta:hover {
+    transform: translateY(-1px);
+    background-color: #fbfbfb;
+    box-shadow: 0 22px 48px -18px rgba(0,0,0,0.38);
+  }
+}
+
+.hero-cta:active { transform: scale(0.97); }
+
+/* Trending tag button smooth hover effect */
+@media (hover: hover) and (pointer: fine) {
+  .glass-pill {
+    transition: transform 200ms var(--ease-out), 
+                box-shadow 200ms var(--ease-out), 
+                background-color 200ms var(--ease-out);
+  }
+
+  .glass-pill:active {
+    transform: scale(0.97);
+  }
+}
+
+/* Hero section image enhanced hover */
+.group img {
+  transition: transform 700ms var(--ease-out-smooth);
+}
+
+/* Vendor location pin enhanced hover */
+.vendor-pin {
+  transition: transform 250ms var(--ease-out), 
+              opacity 250ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vendor-pin:hover {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+/* Map widget smooth hover effect */
+@media (hover: hover) and (pointer: fine) {
+  .map-widget {
+    transition: background-color 250ms var(--ease-out), 
+                box-shadow 250ms var(--ease-out);
+  }
+
+  .map-widget:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Context pill smooth interactions */
+@media (hover: hover) and (pointer: fine) {
+  .context-pill {
+    transition: background-color 200ms var(--ease-out), 
+                box-shadow 200ms var(--ease-out);
+  }
+
+  .context-pill:hover {
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Smooth transitions for links on cards */
+.vendor-card h3,
+.category-card h3 {
+  transition: color 200ms var(--ease-out);
+}
+
+/* Large button hover lift effect */
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

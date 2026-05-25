@@ -1,0 +1,687 @@
+﻿<!-- StreetBowl - Discover Authentic Nigerian Street Food Application -->
+<!-- This is the main landing page that showcases food vendors and helps users discover nearby street food spots -->
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <!-- HEAD SECTION: Meta tags, stylesheets, and fonts configuration -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreetBowl - Discover Authentic Nigerian Street Food</title>
+
+    <!-- Fonts: Geist -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <!-- BODY SECTION: Main content container with flexbox layout for sticky footer -->
+  <body class="bg-background text-dark font-sans antialiased min-h-[100dvh] flex flex-col selection:bg-orange-100 selection:text-orange-900">
+    <!-- NAVIGATION SECTION: Fixed header with logo, menu links, search button, and saved vendors bookmark -->
+    <nav class="fixed top-0 w-full z-50 glass-panel transition-all duration-300" id="navbar">
+      <div class="max-w-[1400px] mx-auto px-6 lg:px-12 h-[86px] flex items-center justify-between">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2 group" >
+          <span class="font-medium text-lg tracking-tighter text-dark">
+            StreetBowl
+          </span>
+        </a>
+
+        <!-- Desktop Links -->
+        <div class="hidden md:flex items-center gap-2 bg-zinc-100/50 backdrop-blur-md px-2 py-1.5 rounded-full border border-zinc-200/50">
+          <a href="index.html" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold text-dark bg-white shadow-sm border border-zinc-200/50 transition-all duration-300 cursor-pointer">
+            Home
+          </a>
+          <a href="explore.html" class="nav-link px-4 py-1.5 rounded-full text-sm font-medium text-muted hover:text-dark hover:bg-black/5 transition-all duration-300 cursor-pointer">
+            Explore
+          </a>
+          <a href="categories.html" class="nav-link px-4 py-1.5 rounded-full text-sm font-medium text-muted hover:text-dark hover:bg-black/5 transition-all duration-300 cursor-pointer">
+            Categories
+          </a>
+          <a href="about.html" class="nav-link px-4 py-1.5 rounded-full text-sm font-medium text-muted hover:text-dark hover:bg-black/5 transition-all duration-300 cursor-pointer">
+            About Us
+          </a>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-5">
+          <!-- Persistent CTA Button -->
+          <button onclick="executeSearch()" class="hidden sm:flex px-5 h-10 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_24px_-6px_rgba(249,115,22,0.4)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_12px_32px_-8px_rgba(249,115,22,0.6)] border border-white/10 btn-primary items-center justify-center gap-2 cursor-pointer relative overflow-hidden group" aria-label="Find food near you">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out"></div>
+            <iconify-icon icon="solar:magnifer-linear" class="text-lg relative z-10"></iconify-icon>
+            <span class="relative z-10">Find Food</span>
+          </button>
+          <a href="saved.html" class="nav-link hidden md:flex text-muted font-medium hover:text-dark group relative cursor-pointer transition-all duration-300" aria-label="Saved Vendors" data-target="saved">
+            <iconify-icon icon="solar:bookmark-linear" class="text-xl group-hover:-translate-y-0.5 transition-transform"></iconify-icon>
+            <span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full border border-white hidden" id="saved-badge"></span>
+          </a>
+          <button class="text-dark hover:text-primary transition-colors md:hidden cursor-pointer" id="mobile-menu-btn">
+            <iconify-icon icon="solar:hamburger-menu-linear" class="text-2xl"></iconify-icon>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MOBILE MENU SECTION: Responsive overlay menu that slides in from the side on mobile devices -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-40 translate-x-full transition-transform duration-300 pt-[110px] px-6 flex flex-col gap-6">
+      <a href="index.html" class="text-xl font-medium tracking-tight text-left border-b border-border pb-4 cursor-pointer">
+        Home
+      </a>
+      <a href="explore.html" class="text-xl font-medium tracking-tight text-left border-b border-border pb-4 cursor-pointer">
+        Explore
+      </a>
+      <a href="categories.html" class="mobile-nav-link text-xl font-medium tracking-tight text-left border-b border-border pb-4 w-full cursor-pointer">
+        Categories
+      </a>
+      <a href="saved.html" class="mobile-nav-link text-xl font-medium tracking-tight text-left border-b border-border pb-4 w-full cursor-pointer text-muted" data-target="saved">
+        Saved Spots
+      </a>
+      <a href="about.html" class="mobile-nav-link text-xl font-medium tracking-tight text-left border-b border-border pb-4 w-full cursor-pointer">
+        About Us
+      </a>
+    </div>
+
+    <!-- MAIN APP CONTAINER: Primary content area that grows to fill available space -->
+    <main id="app-root" class="flex-grow flex flex-col relative w-full pt-[86px]">
+<!-- HOME/HERO SECTION: Main landing page with large headline, search functionality, and interactive map widget -->
+<section id="view-home" class="view-section block w-full bg-background min-h-[calc(100dvh-86px)]">
+
+        <div class="max-w-[1400px] mx-auto px-6 lg:px-12 min-h-[calc(100dvh-86px)] mt-4 md:mt-8 lg:mt-12 flex flex-col lg:flex-row items-center gap-12 py-12 lg:pt-[3rem]">
+          <!-- Hero Left Column: Headline, subheading, search bar, and trending tags -->
+          <div class="w-full lg:w-1/2 flex flex-col gap-6 animate-slide-up relative z-10">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 glass-pill rounded-full w-max text-dark">
+              <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+              <span class="text-xs font-medium text-dark tracking-tight">
+                Discover. Eat. Share.
+              </span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-5xl md:text-7xl font-medium tracking-tighter leading-none text-dark text-balance max-w-4xl">
+              Find
+                <span class="inline-block w-24 md:w-32 h-12 md:h-16 rounded-full align-middle bg-cover bg-center mx-2 shadow-inner border border-zinc-200/50" style="background-image: url('./img/suya (1).jpg')"></span>
+
+              authentic
+              street
+                <span class="inline-block w-20 md:w-24 h-12 md:h-16 rounded-full align-middle bg-cover bg-center mr-2 shadow-inner border border-zinc-200/50" style="background-image: url('./img/bole (1).jpg')"></span>
+
+              food
+              <br class="hidden md:block"/>
+              <span class="text-primary opacity-90">near you.</span>
+            </h1>
+
+            <p class="text-lg text-muted max-w-[45ch] leading-relaxed font-light">
+              Explore the best local spots and hidden culinary gems recommended
+              by a community of real food lovers.
+            </p>
+
+            <!-- Search Box -->
+            <div class="bg-white p-1.5 rounded-full shadow-subtle border border-zinc-200/60 flex flex-col sm:flex-row items-center gap-2 max-w-2xl relative z-20 mt-2">
+              <div class="flex-1 flex items-center gap-3 px-4 w-full h-12 relative">
+                <iconify-icon icon="solar:map-point-linear" class="text-muted text-xl flex-shrink-0"></iconify-icon>
+                <input type="text" id="home-loc-input" placeholder="Location (e.g. Yaba)" class="w-full bg-transparent text-sm font-normal outline-none placeholder:text-zinc-500 text-dark input-field">
+              </div>
+              <div class="hidden sm:block w-px h-6 bg-zinc-200"></div>
+              <div class="flex-1 flex items-center gap-3 px-4 w-full h-12 border-t sm:border-t-0 border-zinc-100 relative">
+                <iconify-icon icon="solar:magnifer-linear" class="text-muted text-xl flex-shrink-0"></iconify-icon>
+                <input type="text" id="home-food-input" placeholder="Search (e.g. Suya)" class="w-full bg-transparent text-sm font-normal outline-none placeholder:text-zinc-500 text-dark input-field">
+              </div>
+              <button onclick="executeSearch()" class="w-full sm:w-auto h-12 px-8 bg-primary hover:bg-primary-hover shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_24px_-6px_rgba(249,115,22,0.6)] border border-white/10 relative overflow-hidden group active:scale-[0.98] btn-primary text-white rounded-full font-semibold text-sm tracking-tight flex items-center justify-center gap-2 cursor-pointer">
+                Search
+              </button>
+            </div>
+
+            <!-- Popular Tags -->
+            <div class="flex items-center gap-3 flex-wrap mt-2">
+              <span class="text-xs font-medium text-muted uppercase tracking-wider">
+                Trending:
+              </span>
+              <div class="flex gap-2 flex-wrap">
+                <button onclick="window.location.href='explore.html?cat=Suya'" class="px-4 py-1.5 rounded-full glass-pill text-dark text-xs font-semibold cursor-pointer animate-fade-in shadow-sm transition-all duration-200 hover:scale-105">
+                  Suya
+                </button>
+                <button onclick="window.location.href='explore.html?cat=Boli'" class="px-4 py-1.5 rounded-full glass-pill text-dark text-xs font-semibold cursor-pointer animate-fade-in shadow-sm transition-all duration-200 hover:scale-105">
+                  Boli
+                </button>
+                <button onclick="window.location.href='explore.html?cat=Akara'" class="px-4 py-1.5 rounded-full glass-pill text-dark text-xs font-semibold cursor-pointer animate-fade-in shadow-sm transition-all duration-200 hover:scale-105">
+                  Akara
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Right Column: Featured vendor image with interactive map overlay showing nearby food spots -->
+          <div class="w-full lg:w-[40%] h-[500px] lg:h-[565px] relative hidden md:block overflow-hidden rounded-[3rem] bg-zinc-100 shadow-sm border border-zinc-100 group">
+
+            <img src="./img/suya (8).jpg" alt="Delicious Nigerian Street Food Assortment" class="w-full h-full object-cover object-[center_5%] group-hover:scale-105 transition-transform duration-3900 ease-in-out" referrerPolicy="no-referrer">
+
+            <!-- Soft Gradient Overlay to ensure contrast for widget -->
+            <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/10 to-dark/40 mix-blend-multiply opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
+
+            <!-- Top Left Detail: Simple Context Pill -->
+            <div class="absolute top-8 left-8 z-30 glass-pill rounded-full py-2.5 px-4 flex items-center gap-2 cursor-pointer transition-all duration-200">
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+              <p class="text-xs  tracking-tight text-white uppercase">50+ Spots Active Now</p>
+            </div>
+
+            <!-- Integrated GPS Radar Map Widget -->
+            <div class="absolute bottom-6 right-6 z-30 w-[90%] max-w-[380px] bg-white/10 backdrop-blur-2xl rounded-[2rem] p-2 transition-all duration-250 shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/20 animate-float">
+               <!-- Interactive Mini Map Display -->
+               <div class="w-full h-48 rounded-[1.5rem] overflow-hidden relative border border-white/10 shadow-inner flex items-center justify-center bg-gradient-to-b from-white/5 to-white/10">
+
+                   <!-- Sleek SVG Map Background with Glassmorphic Map Flooring -->
+                   <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="transform: rotateX(45deg) scale(1.5); transform-origin: center;">
+                      <!-- Isometric Grid Flooring -->
+                      <g stroke="rgba(255,255,255,0.2)" stroke-width="1">
+                          <line x1="0" y1="20" x2="400" y2="20"></line>
+                          <line x1="0" y1="40" x2="400" y2="40"></line>
+                          <line x1="0" y1="60" x2="400" y2="60"></line>
+                          <line x1="0" y1="80" x2="400" y2="80"></line>
+                          <line x1="0" y1="100" x2="400" y2="100"></line>
+                          <line x1="0" y1="120" x2="400" y2="120"></line>
+                          <line x1="0" y1="140" x2="400" y2="140"></line>
+                          <line x1="0" y1="160" x2="400" y2="160"></line>
+                          <line x1="0" y1="180" x2="400" y2="180"></line>
+
+                          <line x1="20" y1="0" x2="20" y2="200"></line>
+                          <line x1="40" y1="0" x2="40" y2="200"></line>
+                          <line x1="60" y1="0" x2="60" y2="200"></line>
+                          <line x1="80" y1="0" x2="80" y2="200"></line>
+                          <line x1="100" y1="0" x2="100" y2="200"></line>
+                          <line x1="120" y1="0" x2="120" y2="200"></line>
+                          <line x1="140" y1="0" x2="140" y2="200"></line>
+                          <line x1="160" y1="0" x2="160" y2="200"></line>
+                          <line x1="180" y1="0" x2="180" y2="200"></line>
+                          <line x1="200" y1="0" x2="200" y2="200"></line>
+                          <line x1="220" y1="0" x2="220" y2="200"></line>
+                          <line x1="240" y1="0" x2="240" y2="200"></line>
+                          <line x1="260" y1="0" x2="260" y2="200"></line>
+                          <line x1="280" y1="0" x2="280" y2="200"></line>
+                          <line x1="300" y1="0" x2="300" y2="200"></line>
+                          <line x1="320" y1="0" x2="320" y2="200"></line>
+                          <line x1="340" y1="0" x2="340" y2="200"></line>
+                          <line x1="360" y1="0" x2="360" y2="200"></line>
+                          <line x1="380" y1="0" x2="380" y2="200"></line>
+                      </g>
+
+                      <!-- Map Roads Overlay -->
+                      <path d="M -50 50 L 150 50 L 250 150 L 450 150" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="12" stroke-linecap="round" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));"></path>
+                      <path d="M 50 -50 L 50 100 L 150 250" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="10" stroke-linecap="round"></path>
+                      <path d="M 250 -50 L 250 150" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="16" stroke-linecap="round"></path>
+                      <path d="M 0 120 L 400 120" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="8" stroke-linecap="round"></path>
+
+                      <!-- Abstract Building blocks -->
+                      <rect x="80" y="20" width="30" height="20" fill="rgba(255,255,255,0.3)" rx="2"></rect>
+                      <rect x="180" y="80" width="40" height="30" fill="rgba(255,255,255,0.2)" rx="2"></rect>
+                      <rect x="280" y="60" width="30" height="40" fill="rgba(255,255,255,0.3)" rx="2"></rect>
+                   </svg>
+
+                   <!-- Animated Route Line between User and Vendor -->
+                   <svg class="absolute inset-0 w-full h-full z-10" viewBox="0 0 380 192" preserveAspectRatio="none">
+                        <path d="M 80 140 C 140 140 220 80 290 60" fill="none" stroke="#ea580c" stroke-width="3" stroke-dasharray="6 6" class="animate-[dashline_20s_linear_infinite] opacity-80"></path>
+                   </svg>
+
+                   <!-- Start Point: User Location Pin -->
+                   <div class="absolute bottom-[15%] left-[15%] flex flex-col items-center z-20">
+                       <div class="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full p-1 shadow-lg border border-white/50 z-10 relative">
+                           <div class="absolute inset-0 rounded-full border border-white animate-ping opacity-50"></div>
+                           <img src="./img/suya (2).jpg" class="w-full h-full rounded-full object-cover grayscale opacity-90">
+                       </div>
+                       <div class="px-3 py-1 glass-pill-dark text-[10px] rounded-full font-bold uppercase tracking-widest mt-[-8px] z-20">You</div>
+                   </div>
+
+                   <!-- End Point: Vendor Highlight Pin -->
+                   <div class="absolute top-[15%] right-[15%] flex flex-col items-center cursor-pointer transition-transform duration-200 z-30" onclick="window.location.href='detail.html?id=1'">
+                       <div class="glass-pill-dark bg-[#f97316]/60 text-[11px] font-bold px-3 py-1 rounded-full z-20 flex items-center gap-1.5 border-white/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_8px_16px_-4px_rgba(249,115,22,0.5)] -mb-2">
+                           <iconify-icon icon="solar:routing-2-bold" class="text-sm"></iconify-icon> 0.2km
+                       </div>
+                       <div class="w-16 h-16 bg-white rounded-full p-1 shadow-xl border-[3px] border-primary relative z-10">
+                           <img src="./img/suya (1).jpg" class="w-full h-full rounded-full object-cover">
+                       </div>
+                   </div>
+
+                   <!-- Other Venue 1: Boli Republic -->
+                   <div class="absolute bottom-[30%] right-[40%] flex flex-col items-center cursor-pointer transition-all duration-200 z-20 opacity-80 hover:opacity-100" onclick="window.location.href='detail.html?id=2'">
+                       <div class="bg-dark/90 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-lg z-20 flex items-center gap-1 border border-white/20 -mb-1.5">
+                           0.8km
+                       </div>
+                       <div class="w-10 h-10 bg-white rounded-full p-0.5 shadow-md border-2 border-white relative z-10 group-hover:border-yellow-400">
+                           <img src="./img/bole (1).jpg" class="w-full h-full rounded-full object-cover grayscale-[30%]">
+                       </div>
+                   </div>
+
+                   <!-- Other Venue 2: Akara Express -->
+                   <div class="absolute top-[25%] left-[30%] flex flex-col items-center cursor-pointer transition-all duration-200 z-20 opacity-70 hover:opacity-100" onclick="window.location.href='detail.html?id=3'">
+                       <div class="bg-dark/90 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-lg z-20 flex items-center gap-1 border border-white/20 -mb-1.5">
+                           1.2km
+                       </div>
+                       <div class="w-8 h-8 bg-white rounded-full p-0.5 shadow-md border-2 border-white relative z-10 group-hover:border-primary">
+                           <img src="./img/akara (1).jpg" class="w-full h-full rounded-full object-cover grayscale-[50%]">
+                       </div>
+                   </div>
+               </div>
+
+               <!-- Context & Action Button -->
+               <div class="py-3 px-4 flex items-center justify-between">
+                   <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/20 border border-white/20 flex items-center justify-center text-white relative shrink-0">
+                             <iconify-icon icon="solar:radar-bold" class="text-xl"></iconify-icon>
+                        </div>
+                        <div>
+                           <p class="text-[15px] font-bold tracking-tight text-white leading-tight">Mama Nkechi Bole</p>
+                           <p class="text-xs text-white/70 font-medium mt-0.5">Top Rated Local Spot</p>
+                        </div>
+                   </div>
+                   <button class="w-10 h-10 rounded-full bg-white text-dark flex items-center justify-center hover:bg-primary hover:text-white btn-primary cursor-pointer" onclick="window.location.href='detail.html?id=1'">
+                       <iconify-icon icon="solar:arrow-right-linear" class="text-lg"></iconify-icon>
+                   </button>
+               </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- FEATURED CATEGORIES SECTION: Display popular food categories (Suya, Boli, Akara, Small Chops) with images and links -->
+        <div class="max-w-[1400px] mx-auto px-6 lg:px-12 pt-[26px] pb-24 border-t border-zinc-100">
+          <div class="flex justify-between items-end mb-10 scroll-animate">
+            <div>
+              <h2 class="text-3xl font-medium tracking-tight text-dark mb-2">
+                Craving something?
+              </h2>
+              <p class="text-base text-muted font-light">
+                Explore our most popular street food categories.
+              </p>
+            </div>
+            <a href="explore.html"  class="link-smooth text-dark font-medium text-sm items-center gap-1 hover:text-primary cursor-pointer hidden sm:flex">
+              View all
+              <iconify-icon icon="solar:arrow-right-linear" class="text-lg"></iconify-icon>
+            </a>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div onclick="window.location.href='explore.html?cat=Suya'" class="group cursor-pointer category-card">
+              <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-3 bg-zinc-100 relative">
+                <img src="./img/suya (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+              </div>
+              <h3 class="text-sm font-semibold text-dark group-hover:text-primary transition-colors">
+                Suya
+              </h3>
+            </div>
+            <div onclick="window.location.href='explore.html?cat=Boli'" class="group cursor-pointer category-card">
+              <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-3 bg-zinc-100 relative">
+                <img src="./img/bole (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+              </div>
+              <h3 class="text-sm font-semibold text-dark group-hover:text-primary transition-colors">
+                Boli
+              </h3>
+            </div>
+            <div onclick="window.location.href='explore.html?cat=Akara'" class="group cursor-pointer category-card">
+              <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-3 bg-zinc-100 relative">
+                <img src="./img/akara (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+              </div>
+              <h3 class="text-sm font-semibold text-dark group-hover:text-primary transition-colors">
+                Akara
+              </h3>
+            </div>
+            <div onclick="window.location.href='explore.html?cat=Small Chops'" class="group cursor-pointer category-card">
+              <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-3 bg-zinc-100 relative">
+                <img src="./img/smallchops (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+              </div>
+              <h3 class="text-sm font-semibold text-dark group-hover:text-primary transition-colors">
+                Small Chops
+              </h3>
+            </div>
+          </div>
+        </div>
+
+  
+        <!-- TOP RATED SECTION: Showcase the highest-rated vendor spots with ratings and locations -->
+        <div class="bg-white py-24 border-y border-zinc-100">
+          <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+            <h2 class="text-3xl font-medium tracking-tight text-dark mb-10 text-center scroll-animate">
+              Top Rated Spots
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+              <div onclick="window.location.href='detail.html?id=4'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-1 vendor-card">
+                <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-4">
+                  <img src="./img/amala (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="px-2 pb-2">
+                  <div class="flex justify-between items-start mb-1">
+                    <h3 class="text-lg font-medium text-dark tracking-tight">
+                      Amala Junction
+                    </h3>
+                    <div class="flex items-center gap-1 text-sm font-medium text-dark">
+                      <iconify-icon icon="solar:star-bold" class="text-primary"></iconify-icon>
+                      4.9
+                    </div>
+                  </div>
+                  <p class="text-sm text-muted font-light flex items-center gap-1.5">
+                    <iconify-icon icon="solar:map-point-linear"></iconify-icon>
+                    Ibadan
+                  </p>
+                </div>
+              </div>
+              <div onclick="window.location.href='detail.html?id=2'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-2 vendor-card">
+                <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-4">
+                  <img src="./img/bole (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="px-2 pb-2">
+                  <div class="flex justify-between items-start mb-1">
+                    <h3 class="text-lg font-medium text-dark tracking-tight">
+                      Boli Republic
+                    </h3>
+                    <div class="flex items-center gap-1 text-sm font-medium text-dark">
+                      <iconify-icon icon="solar:star-bold" class="text-primary"></iconify-icon>
+                      4.7
+                    </div>
+                  </div>
+                  <p class="text-sm text-muted font-light flex items-center gap-1.5">
+                    <iconify-icon icon="solar:map-point-linear"></iconify-icon>
+                    Port Harcourt
+                  </p>
+                </div>
+              </div>
+              <div onclick="window.location.href='detail.html?id=6'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-3 vendor-card">
+                <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-4">
+                  <img src="./img/shawarma (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="px-2 pb-2">
+                  <div class="flex justify-between items-start mb-1">
+                    <h3 class="text-lg font-medium text-dark tracking-tight">
+                      Mai Shayi Corner
+                    </h3>
+                    <div class="flex items-center gap-1 text-sm font-medium text-dark">
+                      <iconify-icon icon="solar:star-bold" class="text-primary"></iconify-icon>
+                      4.8
+                    </div>
+                  </div>
+                  <p class="text-sm text-muted font-light flex items-center gap-1.5">
+                    <iconify-icon icon="solar:map-point-linear"></iconify-icon>
+                    Kano
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HOW IT WORKS SECTION: Three-step explanation of the platform (Discover, Locate, Enjoy) with icons -->
+        <div class="py-24 max-w-[1400px] mx-auto px-6 lg:px-12">
+          <div class="text-center max-w-2xl mx-auto mb-16 scroll-animate">
+            <h2 class="text-3xl font-medium tracking-tight text-dark mb-3">
+              How it works
+            </h2>
+            <p class="text-base text-muted font-light">
+              Three simple steps to satisfy your cravings.
+            </p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-12 relative">
+            <div class="hidden md:block absolute top-8 left-[16%] w-[68%] h-px bg-zinc-200 -z-10"></div>
+            <div class="text-center flex flex-col items-center scroll-animate scroll-stagger-1">
+              <div class="w-16 h-16 bg-white border border-zinc-200 rounded-full flex items-center justify-center text-dark mb-5 shadow-sm">
+                <iconify-icon icon="solar:magnifer-linear" class="text-2xl"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-medium text-dark mb-2 tracking-tight">
+                1. Discover
+              </h3>
+              <p class="text-muted text-sm font-light leading-relaxed max-w-[30ch]">
+                Search for your favorite food or explore what's popular around
+                your location.
+              </p>
+            </div>
+            <div class="text-center flex flex-col items-center scroll-animate scroll-stagger-2">
+              <div class="w-16 h-16 bg-white border border-zinc-200 rounded-full flex items-center justify-center text-dark mb-5 shadow-sm">
+                <iconify-icon icon="solar:routing-2-linear" class="text-2xl"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-medium text-dark mb-2 tracking-tight">
+                2. Locate
+              </h3>
+              <p class="text-muted text-sm font-light leading-relaxed max-w-[30ch]">
+                Get real-time directions and view operating hours before you
+                visit.
+              </p>
+            </div>
+            <div class="text-center flex flex-col items-center scroll-animate scroll-stagger-3">
+              <div class="w-16 h-16 bg-dark border border-zinc-800 rounded-full flex items-center justify-center text-white mb-5 shadow-sm">
+                <iconify-icon icon="solar:star-linear" class="text-2xl"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-medium text-dark mb-2 tracking-tight">
+                3. Enjoy
+              </h3>
+              <p class="text-muted text-sm font-light leading-relaxed max-w-[30ch]">
+                Savor the taste and drop a review to help others find the best
+                spots.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPOTLIGHT SECTION: Featured vendor highlight (Malam Rayo Suya Spot) with background image and call-to-action -->
+        <div class="py-28 bg-[#121214] text-white border-y border-zinc-900 relative overflow-hidden">
+          <!-- Background image with a sophisticated gradient mask to ensure superb content readability -->
+          <div class="absolute inset-0 z-0 select-none">
+            <img src="./img/malam (2).jpg" alt="Malam Rayo selling beef skewers" class="w-full h-full object-cover object-center opacity-60" referrerPolicy="no-referrer">
+            <!-- Left-to-right deep dark gradient to smoothly blend the image with text zone -->
+            <div class="absolute inset-0 bg-gradient-to-r from-neutral-950/70 via-neutral-950/50 to-neutral-950/0 md:block hidden"></div>
+            <!-- Full solid dark overlay for mobile screens to maximize legibility -->
+            <div class="absolute inset-0 bg-neutral-950/60 md:hidden block"></div>
+          </div>
+
+          <div class="max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center gap-12 relative z-10">
+            <div class="w-full md:w-1/2 flex flex-col items-start gap-6 relative z-10 scroll-animate scroll-animate-left">
+              <span class="px-4 py-1.5 rounded-full glass-pill-dark text-white text-xs font-semibold tracking-wider uppercase animate-pulse">
+                Spotlight
+              </span>
+              <h2 class="text-4xl md:text-5xl font-medium tracking-tight text-balance">
+                Malam Rayo Suya Spot
+              </h2>
+              <p class="text-zinc-300 leading-relaxed font-light text-lg max-w-[45ch]">
+                Serving the most authentic and spicy roasted beef skewers in
+                Yaba for over 10 years. A true community favorite that never
+                disappoints. Experience the perfect blend of tradition and
+                flavor.
+              </p>
+              <div class="flex items-center gap-4 mt-4">
+                <button onclick="window.location.href='detail.html?id=1'" class="px-8 py-3 bg-primary hover:bg-primary-hover text-white rounded-full font-semibold text-sm transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_24px_-6px_rgba(249,115,22,0.6)] border border-white/10 relative overflow-hidden group active:scale-95 cursor-pointer btn-primary">
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMMUNITY TESTIMONIALS SECTION: Customer reviews and testimonials showcasing user satisfaction and app benefits -->
+        <div class="py-24 bg-[#fafafa] border-b border-zinc-100">
+          <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+            <div class="text-center max-w-2xl mx-auto mb-16 scroll-animate">
+              <h2 class="text-3xl font-medium tracking-tight text-dark mb-3">
+                Community Love
+              </h2>
+              <p class="text-base text-muted font-light">
+                Hear what fellow foodies are saying about their recent
+                discoveries.
+              </p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+              <div class="p-8 rounded-[2rem] bg-white border border-zinc-100 shadow-sm testimonial-card">
+                <div class="flex items-center gap-1 mb-4 text-[#f97316]">
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                </div>
+                <p class="text-dark font-light leading-relaxed mb-6">
+                  "Found the best Boli spot in Port Harcourt through StreetBowl.
+                  The routing feature was super accurate!"
+                </p>
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center font-medium text-dark text-sm">
+                    C
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-sm text-dark tracking-tight">
+                      Chidi N.
+                    </h4>
+                    <p class="text-xs text-muted font-light">Food Enthusiast</p>
+                  </div>
+                </div>
+              </div>
+              <div class="p-8 rounded-[2rem] bg-white border border-zinc-100 shadow-sm testimonial-card">
+                <div class="flex items-center gap-1 mb-4 text-[#f97316]">
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                </div>
+                <p class="text-dark font-light leading-relaxed mb-6">
+                  "I travel a lot for work and this app has become my go-to for
+                  finding authentic local food wherever I am."
+                </p>
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center font-medium text-dark text-sm">
+                    A
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-sm text-dark tracking-tight">
+                      Amina Y.
+                    </h4>
+                    <p class="text-xs text-muted font-light">Travel Blogger</p>
+                  </div>
+                </div>
+              </div>
+              <div class="p-8 rounded-[2rem] bg-white border border-zinc-100 shadow-sm testimonial-card">
+                <div class="flex items-center gap-1 mb-4 text-[#f97316]">
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" class="text-lg"></iconify-icon>
+                </div>
+                <p class="text-dark font-light leading-relaxed mb-6">
+                  "Finally an app that gives street food vendors the recognition
+                  they deserve. Absolutely love the interface."
+                </p>
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center font-medium text-dark text-sm">
+                    F
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-sm text-dark tracking-tight">
+                      Femi A.
+                    </h4>
+                    <p class="text-xs text-muted font-light">Local Guide</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CALL-TO-ACTION SECTION: Promotional banner encouraging users to explore the full map with location services -->
+        <div class="py-12 px-6 lg:px-12">
+          <div class="max-w-[1400px] mx-auto bg-dark rounded-[2.5rem] p-10 lg:p-16 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between" style="background-image: url('./img/pa.png'); background-size: cover; background-position:center;">
+            <div class="absolute inset-0 opacity-[0.60] pointer-events-none bg-gradient-to-r from-neutral-950/80 to-neutral-950/20"></div>
+            <div class="relative z-10 text-white max-w-lg text-center lg:text-left mb-8 lg:mb-0">
+              <h2 class="text-3xl md:text-4xl font-medium tracking-tight mb-4 text-balance">
+                Ready to explore your neighborhood?
+              </h2>
+              <p class="text-sm text-zinc-400 font-light mb-8">
+                Turn on location services and let us guide you to the nearest
+                cravings.
+              </p>
+              <a href="explore.html" class="hero-cta link-smooth mx-auto lg:mx-0" aria-label="Open full map">
+                <iconify-icon icon="solar:map-linear" class="text-lg"></iconify-icon>
+                <span>Open Full Map</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER SECTION: Company info, navigation links, and newsletter signup -->
+</section>
+
+<!-- FOOTER: Website footer with branding, links, and contact information -->
+<footer class="bg-white border-t border-zinc-100 py-16">
+          <div class="max-w-[1400px] mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="md:col-span-1">
+              <a href="index.html"  class="flex items-center gap-2 mb-4">
+                <span class="font-medium text-xl tracking-tighter text-dark">
+                  StreetBowl
+                </span>
+              </a>
+              <p class="text-sm text-muted font-light mb-6 leading-relaxed">
+                Mapping the unmapped street food of your city.
+              </p>
+            </div>
+            <div>
+              <h4 class="font-medium text-sm text-dark mb-4 tracking-tight">
+                Explore
+              </h4>
+              <ul class="flex flex-col gap-3 text-sm text-muted font-light">
+                <li>
+                  <a href="explore.html"  class="hover:text-dark transition-colors">
+                    All Spots
+                  </a>
+                </li>
+                <li>
+                  <a href="categories.html"  class="hover:text-dark transition-colors">
+                    Categories
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="hover:text-dark transition-colors">
+                    Top Rated
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-medium text-sm text-dark mb-4 tracking-tight">
+                Company
+              </h4>
+              <ul class="flex flex-col gap-3 text-sm text-muted font-light">
+                <li>
+                  <a href="about.html"  class="hover:text-dark transition-colors">
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="hover:text-dark transition-colors">
+                    Careers
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="hover:text-dark transition-colors">
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-medium text-sm text-dark mb-4 tracking-tight">
+                Newsletter
+              </h4>
+              <div class="flex gap-2">
+                <input type="email" placeholder="Email address" class="bg-background border border-zinc-200 rounded-xl px-4 py-2 w-full outline-none focus:border-zinc-400 focus:ring-2 focus:ring-primary/20 text-sm font-light transition-all input-field">
+                <button class="bg-dark text-white px-5 py-2 rounded-xl font-medium text-sm hover:bg-primary transition-all active:scale-[0.98] cursor-pointer shadow-md btn-primary">
+                  Join
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="max-w-[1400px] mx-auto px-6 lg:px-12 mt-16 pt-8 border-t border-zinc-100 text-center text-muted font-light text-xs">
+            © 2024 StreetBowl. All rights reserved.
+          </div>
+        </footer>
+</main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
