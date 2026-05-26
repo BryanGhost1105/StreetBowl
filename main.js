@@ -939,10 +939,13 @@ function renderExploreGrid() {
                     <p class="text-sm text-muted font-light flex items-center gap-1.5 mb-4">
                         <iconify-icon icon="solar:map-point-linear"></iconify-icon> ${v.location}
                     </p>
-                    <div class="mt-auto pt-3 flex items-center justify-between">
+                    <div class="mt-auto pt-3 mb-4 flex items-center justify-between">
                         <span class="text-xs text-muted font-semibold">${v.category}</span>
                         <span class="text-xs text-zinc-400 font-light">${v.reviewsCount} reviews</span>
                     </div>
+                    <button onclick="viewVendor(${v.id}); event.stopPropagation()" class="px-2 py-0.5 text-primary hover:text-primary-hover font-medium text-[11px] transition-colors cursor-pointer inline-block">
+                        View Details →
+                    </button>
                 </div>
             </div>
         `}).join('');

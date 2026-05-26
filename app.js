@@ -561,7 +561,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initScrollAnimations();
+    
+    // Initialize live updates for hero section if elements exist
+    if (document.getElementById('hero-notif-toast') || document.getElementById('hero-rating-card')) {
+        initLiveHeroUpdates();
+    }
 });
+
+/**
+ * Initializes the live updating loop for the hero section's notification toast and rating card.
+ */
+function initLiveHeroUpdates() {
+    // Dummy data for notifications
+    const notifications = [
+        { icon: "solar:fire-bold", text: "Chidi just ordered 🔥", time: "2 min ago · Yaba" },
+        { icon: "solar:star-bold", text: "Amina left a 5★ review", time: "5 min ago · Surulere" },
+        { icon: "solar:routing-2-bold", text: "Femi arrived at Suya Spot", time: "Just now · Lekki" },
+        { icon: "solar:heart-bold", text: "Bola saved Boli Heaven", time: "10 min ago · Bariga" },
+        { icon: "solar:shop-bold", text: "Amala Junction just opened", time: "1 min ago · Ibadan" }
+    ];
+
+    // Dummy data for rating stats
+    const ratings = [
+        { score: "4.8", reviews: "2.3k Reviews" },
+        { score: "4.9", reviews: "Trending Now" },
+        { score: "4.7", reviews: "50+ Orders Today" },
+        { score: "4.8", reviews: "Top Rated Spot" }
+    ];
+
+    let notifIndex = 0;
+    let ratingIndex = 0;
+
+    const notifToast = document.getElementById('hero-notif-toast');
+    const notifIcon = document.getElementById('hero-notif-icon');
+    const notifTitle = document.getElementById('hero-notif-title');
+    const notifTime = document.getElementById('hero-notif-time');
+
+    const ratingCard = document.getElementById('hero-rating-card');
+    const ratingScore = document.getElementById('hero-rating-score');
+    const ratingReviews = document.getElementById('hero-rating-reviews');
+
+    // Notification update loop
+    if (notifToast && notifIcon && notifTitle && notifTime) {
+        setInterval(() => {
+            notifToast.classList.remove('animate-cycle-in');
+            notifToast.classList.add('animate-cycle-out');
+            
+            setTimeout(() => {
+                notifIndex = (notifIndex + 1) % notifications.length;
+                notifIcon.setAttribute('icon', notifications[notifIndex].icon);
+                notifTitle.textContent = notifications[notifIndex].text;
+                notifTime.textContent = notifications[notifIndex].time;
+                
+                notifToast.classList.remove('animate-cycle-out');
+                notifToast.classList.add('animate-cycle-in');
+            }, 400); // Wait for fade out to complete
+        }, 5000); // Change every 5 seconds
+    }
+
+    // Rating card update loop
+    if (ratingCard && ratingScore && ratingReviews) {
+        setInterval(() => {
+            ratingCard.classList.remove('animate-cycle-in');
+            ratingCard.classList.add('animate-cycle-out');
+            
+            setTimeout(() => {
+                ratingIndex = (ratingIndex + 1) % ratings.length;
+                ratingScore.textContent = ratings[ratingIndex].score;
+                ratingReviews.textContent = ratings[ratingIndex].reviews;
+                
+                ratingCard.classList.remove('animate-cycle-out');
+                ratingCard.classList.add('animate-cycle-in');
+            }, 400);
+        }, 7000); // Change every 7 seconds
+    }
+}
 
 
 
@@ -940,10 +1014,13 @@ function renderExploreGrid() {
                     <p class="text-sm text-muted font-light flex items-center gap-1.5 mb-4">
                         <iconify-icon icon="solar:map-point-linear"></iconify-icon> ${v.location}
                     </p>
-                    <div class="mt-auto pt-3 flex items-center justify-between">
+                    <div class="mt-auto pt-3 mb-4 flex items-center justify-between">
                         <span class="text-xs text-muted font-semibold">${v.category}</span>
                         <span class="text-xs text-zinc-400 font-light">${v.reviewsCount} reviews</span>
                     </div>
+                    <button onclick="viewVendor(${v.id}); event.stopPropagation()" class="px-2 py-0.5 text-primary hover:text-primary-hover font-medium text-[11px] transition-colors cursor-pointer inline-block">
+                        View Details →
+                    </button>
                 </div>
             </div>
         `}).join('');

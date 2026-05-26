@@ -94,6 +94,67 @@ button, input, textarea, select {
           100% { transform: rotateX(60deg) rotateZ(-45deg) translate3d(-10%, -10%, 0); }
       }
 
+      /* Hero widget: notification toast slides in from right */
+      @keyframes heroNotifSlideIn {
+          0% { opacity: 0; transform: translateX(2rem); }
+          100% { opacity: 1; transform: translateX(0); }
+      }
+      .animate-notif-in {
+          animation: heroNotifSlideIn 0.5s var(--ease-out-smooth) 1.2s both;
+      }
+
+      /* Hero widget: shimmer ring pulse around the main vendor pin */
+      @keyframes ringPulse {
+          0% { transform: scale(1); opacity: 0.6; }
+          70% { transform: scale(1.6); opacity: 0; }
+          100% { transform: scale(1.6); opacity: 0; }
+      }
+      .ring-pulse {
+          animation: ringPulse 2.5s ease-out infinite;
+      }
+      .ring-pulse-delayed {
+          animation: ringPulse 2.5s ease-out 1.2s infinite;
+      }
+
+      /* Hero widget: subtle orbit float for food thumbnails */
+      @keyframes orbitFloat {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(3px, -5px) rotate(2deg); }
+          50% { transform: translate(-2px, -8px) rotate(-1deg); }
+          75% { transform: translate(-4px, -3px) rotate(1deg); }
+      }
+      .animate-orbit {
+          animation: orbitFloat 8s ease-in-out infinite;
+      }
+      .animate-orbit-delayed {
+          animation: orbitFloat 8s ease-in-out 3s infinite;
+      }
+
+      /* Hero widget: subtle glow behind the map widget */
+      .hero-map-glow {
+          box-shadow:
+              0 8px 32px rgba(0,0,0,0.25),
+              0 0 60px -10px rgba(249, 115, 22, 0.15),
+              inset 0 1px 0 rgba(255,255,255,0.15);
+      }
+
+      /* Cycle animations for dynamic live updates */
+      .animate-cycle-out {
+          animation: cycleOut 0.4s var(--ease-out-smooth) forwards;
+      }
+      .animate-cycle-in {
+          animation: cycleIn 0.4s var(--ease-out-smooth) forwards;
+      }
+
+      @keyframes cycleOut {
+          from { opacity: 1; transform: translateY(0) scale(1); }
+          to { opacity: 0; transform: translateY(-0.5rem) scale(0.95); }
+      }
+      @keyframes cycleIn {
+          from { opacity: 0; transform: translateY(0.5rem) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
       /* Scroll-triggered entrance animations */
       @keyframes scrollFadeInUp {
           from {
