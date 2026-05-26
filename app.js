@@ -797,16 +797,51 @@ function fuzzySearchVendors(searchTerm, vendorsList = vendors) {
             const categoryScore = calculateSimilarity(term, vendor.category.toLowerCase());
             
             // Perfect matches get highest score, fuzzy matches get lower
-            if (vendor.name.toLowerCase().includes(term)) totalScore += 10;
-            else totalScore += nameScore * 3;
+            let hasIncludeMatch = false;
             
-            if (vendor.location.toLowerCase().includes(term)) totalScore += 8;
-            else totalScore += locationScore * 2;
+            if (vendor.name.toLowerCase().includes(term)) {
+                totalScore += 10;
+                hasIncludeMatch = true;
+            } else {
+                totalScore += nameScore * 3;
+            }
             
-            if (vendor.category.toLowerCase().includes(term)) totalScore += 10;
-            else totalScore += categoryScore * 3;
+            if (vendor.location.toLowerCase().includes(term)) {
+                totalScore += 8;
+                hasIncludeMatch = true;
+            } else {
+                totalScore += locationScore * 2;
+            }
             
-            if (nameScore > 0.5 || locationScore > 0.5 || categoryScore > 0.5) {
+            if (vendor.category.toLowerCase().includes(term)) {
+                totalScore += 10;
+                hasIncludeMatch = true;
+            } else {
+                totalScore += categoryScore * 3;
+            }
+            
+            // Check menu items
+            let menuMatch = false;
+            let maxMenuScore = 0;
+            if (vendor.menu) {
+                vendor.menu.forEach(menuItem => {
+                    const itemNameScore = calculateSimilarity(term, menuItem.item.toLowerCase());
+                    const itemDescScore = calculateSimilarity(term, menuItem.desc.toLowerCase());
+                    
+                    if (menuItem.item.toLowerCase().includes(term) || menuItem.desc.toLowerCase().includes(term)) {
+                        menuMatch = true;
+                        hasIncludeMatch = true;
+                        totalScore += 5; 
+                    } else {
+                        maxMenuScore = Math.max(maxMenuScore, itemNameScore, itemDescScore);
+                    }
+                });
+            }
+            if (maxMenuScore > 0.5 && !menuMatch) {
+                totalScore += maxMenuScore * 2;
+            }
+            
+            if (hasIncludeMatch || nameScore > 0.5 || locationScore > 0.5 || categoryScore > 0.5 || maxMenuScore > 0.5) {
                 matchCount++;
             }
         });
@@ -868,6 +903,9 @@ function initExploreFilters() {
  */
 function setCategory(cat) {
     state.activeCategory = cat;
+    state.searchQuery = '';
+    const searchInput = document.getElementById('explore-search');
+    if (searchInput) searchInput.value = '';
     initExploreFilters();
     renderExploreGrid();
 }
@@ -944,40 +982,31 @@ function renderExploreGrid() {
         emptyState.classList.add('flex');
         
         // Show enhanced empty search state
-        if (state.searchQuery && state.searchQuery.trim().length > 0) {
-            const suggestionDiv = emptyState.querySelector('#search-suggestions');
-            if (suggestionDiv) {
-                suggestionDiv.innerHTML = `
-                    <div class="text-center max-w-sm mx-auto mt-2">
-                        <div class="text-5xl mb-2">😔</div>
-                        <h3 class="text-lg font-medium text-dark mb-1">
-                            No street food spots found.
-                        </h3>
-                        <p class="text-sm text-muted font-light mb-4">
-                            Try searching for:
-                        </p>
-                        <ul class="flex flex-col gap-2 text-left">
-                            ${['Suya', 'Akara', 'Boli'].map(term => `
-                                <li>
-                                    <button onclick="state.searchQuery = '${term}'; renderExploreGrid();" 
-                                        class="w-full px-4 py-2.5 text-left bg-white hover:bg-primary/5 border border-zinc-200 hover:border-primary/20 rounded-lg text-sm font-light text-dark transition-all hover:text-primary cursor-pointer flex items-center gap-2 group">
-                                        <span class="text-muted group-hover:text-primary transition-colors">•</span>
-                                        <span>${term}</span>
-                                    </button>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                `;
-                suggestionDiv.classList.remove('hidden');
-            }
-        } else {
-            // Clear suggestions if no search query
-            const suggestionDiv = emptyState.querySelector('#search-suggestions');
-            if (suggestionDiv) {
-                suggestionDiv.innerHTML = '';
-                suggestionDiv.classList.add('hidden');
-            }
+        const suggestionDiv = emptyState.querySelector('#search-suggestions');
+        if (suggestionDiv) {
+            suggestionDiv.innerHTML = `
+                <div class="text-center max-w-sm mx-auto mt-2">
+                    <div class="text-5xl mb-2">😔</div>
+                    <h3 class="text-lg font-medium text-dark mb-1">
+                        No street food spots found.
+                    </h3>
+                    <p class="text-sm text-muted font-light mb-4">
+                        Try searching for:
+                    </p>
+                    <ul class="flex flex-col gap-2 text-left">
+                        ${['Suya', 'Akara', 'Boli'].map(term => `
+                            <li>
+                                <button onclick="state.searchQuery = '${term}'; state.activeCategory = 'All'; const searchInput = document.getElementById('explore-search'); if(searchInput) searchInput.value = '${term}'; initExploreFilters(); renderExploreGrid();" 
+                                    class="w-full px-4 py-2.5 text-left bg-white hover:bg-primary/5 border border-zinc-200 hover:border-primary/20 rounded-lg text-sm font-light text-dark transition-all hover:text-primary cursor-pointer flex items-center gap-2 group">
+                                    <span class="text-muted group-hover:text-primary transition-colors">•</span>
+                                    <span>${term}</span>
+                                </button>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+            suggestionDiv.classList.remove('hidden');
         }
     } else {
         grid.classList.remove('hidden');
