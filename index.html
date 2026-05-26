@@ -1,4 +1,4 @@
-﻿<!-- StreetBowl - Discover Authentic Nigerian Street Food Application -->
+<!-- StreetBowl - Discover Authentic Nigerian Street Food Application -->
 <!-- This is the main landing page that showcases food vendors and helps users discover nearby street food spots -->
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -118,17 +118,17 @@
             </p>
 
             <!-- Search Box -->
-            <div class="bg-white p-1.5 rounded-full shadow-subtle border border-zinc-200/60 flex flex-col sm:flex-row items-center gap-2 max-w-2xl relative z-20 mt-2">
-              <div class="flex-1 flex items-center gap-3 px-4 w-full h-12 relative">
+            <div class="bg-white p-1.5 rounded-2xl sm:rounded-full shadow-subtle border border-zinc-200/60 flex flex-col sm:flex-row items-center gap-2 w-full sm:max-w-2xl relative z-20 mt-2 overflow-hidden box-border">
+              <div class="flex items-center gap-3 px-4 w-full min-w-0 h-12 relative sm:flex-1">
                 <iconify-icon icon="solar:map-point-linear" class="text-muted text-xl flex-shrink-0"></iconify-icon>
-                <input type="text" id="home-loc-input" placeholder="Location (e.g. Yaba)" class="w-full bg-transparent text-sm font-normal outline-none placeholder:text-zinc-500 text-dark input-field">
+                <input type="text" id="home-loc-input" placeholder="Location (e.g. Yaba)" class="w-full min-w-0 bg-transparent text-sm font-normal outline-none placeholder:text-zinc-500 text-dark input-field">
               </div>
-              <div class="hidden sm:block w-px h-6 bg-zinc-200"></div>
-              <div class="flex-1 flex items-center gap-3 px-4 w-full h-12 border-t sm:border-t-0 border-zinc-100 relative">
+              <div class="hidden sm:block w-px h-6 bg-zinc-200 flex-shrink-0"></div>
+              <div class="flex items-center gap-3 px-4 w-full min-w-0 h-12 border-t sm:border-t-0 border-zinc-100 relative sm:flex-1">
                 <iconify-icon icon="solar:magnifer-linear" class="text-muted text-xl flex-shrink-0"></iconify-icon>
-                <input type="text" id="home-food-input" placeholder="Search (e.g. Suya)" class="w-full bg-transparent text-sm font-normal outline-none placeholder:text-zinc-500 text-dark input-field">
+                <input type="text" id="home-food-input" placeholder="Search (e.g. Suya)" class="w-full min-w-0 bg-transparent text-sm font-normal outline-none placeholder:text-zinc-500 text-dark input-field">
               </div>
-              <button onclick="executeSearch()" class="w-full sm:w-auto h-12 px-8 bg-primary hover:bg-primary-hover shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_24px_-6px_rgba(249,115,22,0.6)] border border-white/10 relative overflow-hidden group active:scale-[0.98] btn-primary text-white rounded-full font-semibold text-sm tracking-tight flex items-center justify-center gap-2 cursor-pointer">
+              <button onclick="executeSearch()" class="w-full sm:w-auto h-12 px-6 sm:px-8 bg-primary hover:bg-primary-hover shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_24px_-6px_rgba(249,115,22,0.6)] border border-white/10 relative overflow-hidden group active:scale-[0.98] btn-primary text-white rounded-full font-semibold text-sm tracking-tight flex items-center justify-center gap-2 cursor-pointer flex-shrink-0">
                 Search
               </button>
             </div>
@@ -347,11 +347,11 @@
               Top Rated Spots
             </h2>
             <div class="grid md:grid-cols-3 gap-6">
-              <div onclick="window.location.href='detail.html?id=4'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-1 vendor-card">
+              <div onclick="window.location.href='detail.html?id=4'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-1 vendor-card flex flex-col h-full">
                 <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-4">
                   <img src="./img/amala (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
-                <div class="px-2 pb-2">
+                <div class="px-2 pb-4 flex-grow">
                   <div class="flex justify-between items-start mb-1">
                     <h3 class="text-lg font-medium text-dark tracking-tight">
                       Amala Junction
@@ -366,12 +366,15 @@
                     Ibadan
                   </p>
                 </div>
+                <button onclick="window.location.href='detail.html?id=4'; event.stopPropagation()" class="mt-2 px-2 py-0.5 text-primary hover:text-primary-hover font-medium text-[11px] transition-colors cursor-pointer inline-block">
+                  View Details →
+                </button>
               </div>
-              <div onclick="window.location.href='detail.html?id=2'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-2 vendor-card">
+              <div onclick="window.location.href='detail.html?id=2'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-2 vendor-card flex flex-col h-full">
                 <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-4">
                   <img src="./img/bole (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
-                <div class="px-2 pb-2">
+                <div class="px-2 pb-4 flex-grow">
                   <div class="flex justify-between items-start mb-1">
                     <h3 class="text-lg font-medium text-dark tracking-tight">
                       Boli Republic
@@ -386,12 +389,15 @@
                     Port Harcourt
                   </p>
                 </div>
+                <button onclick="window.location.href='detail.html?id=2'; event.stopPropagation()" class="mt-2 px-2 py-0.5 text-primary hover:text-primary-hover font-medium text-[11px] transition-colors cursor-pointer inline-block">
+                  View Details →
+                </button>
               </div>
-              <div onclick="window.location.href='detail.html?id=6'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-3 vendor-card">
+              <div onclick="window.location.href='detail.html?id=6'" class="group bg-background rounded-[2rem] p-4 border border-zinc-100 cursor-pointer scroll-animate scroll-stagger-3 vendor-card flex flex-col h-full">
                 <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-4">
                   <img src="./img/shawarma (1).jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
-                <div class="px-2 pb-2">
+                <div class="px-2 pb-4 flex-grow">
                   <div class="flex justify-between items-start mb-1">
                     <h3 class="text-lg font-medium text-dark tracking-tight">
                       Mai Shayi Corner
@@ -406,6 +412,9 @@
                     Kano
                   </p>
                 </div>
+                <button onclick="window.location.href='detail.html?id=6'; event.stopPropagation()" class="mt-2 px-2 py-0.5 text-primary hover:text-primary-hover font-medium text-[11px] transition-colors cursor-pointer inline-block">
+                  View Details →
+                </button>
               </div>
             </div>
           </div>
