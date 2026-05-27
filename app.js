@@ -44,6 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderExploreGrid();
             });
         }
+        
+        if (state.searchQuery && state.searchQuery.trim().length > 0) {
+            // Toast functionality removed
+        }
     }
 
     if (document.getElementById('categories-grid')) {
@@ -104,7 +108,7 @@ function initLiveHeroUpdates() {
         { icon: "solar:fire-bold", text: "Chidi just ordered 🔥", time: "2 min ago · Yaba" },
         { icon: "solar:star-bold", text: "Amina left a 5★ review", time: "5 min ago · Surulere" },
         { icon: "solar:routing-2-bold", text: "Femi arrived at Suya Spot", time: "Just now · Lekki" },
-        { icon: "solar:heart-bold", text: "Bola saved Boli Heaven", time: "10 min ago · Bariga" },
+        { icon: "solar:heart-bold", text: "Bola saved Bole Heaven", time: "10 min ago · Bariga" },
         { icon: "solar:shop-bold", text: "Amala Junction just opened", time: "1 min ago · Ibadan" }
     ];
 
@@ -400,7 +404,7 @@ function executeSearch() {
 
 /**
  * Navigates directly to the explore page filtered by a specific category.
- * @param {string} category - The category to filter by (e.g., 'Suya', 'Boli').
+ * @param {string} category - The category to filter by (e.g., 'Suya', 'Bole').
  */
 function quickSearch(category) {
     window.location.href = `explore.html?cat=${encodeURIComponent(category)}`;
@@ -457,13 +461,19 @@ function clearFilters() {
  */
 function toggleSave(id, event) {
     event.stopPropagation();
+    let isSaved = false;
     if (state.savedVendors.has(id)) {
         state.savedVendors.delete(id);
     } else {
         state.savedVendors.add(id);
+        isSaved = true;
     }
     
     localStorage.setItem('savedVendors', JSON.stringify([...state.savedVendors]));
+    
+    if (isSaved) {
+        showToast('Vendor saved successfully');
+    }
 
     const badge = document.getElementById('saved-badge');
     if(badge) {
@@ -521,7 +531,7 @@ function renderExploreGrid() {
                         Try searching for:
                     </p>
                     <ul class="flex flex-col gap-2 text-left">
-                        ${['Suya', 'Akara', 'Boli'].map(term => `
+                        ${['Suya', 'Akara', 'Bole'].map(term => `
                             <li>
                                 <button onclick="state.searchQuery = '${term}'; state.activeCategory = 'All'; const searchInput = document.getElementById('explore-search'); if(searchInput) searchInput.value = '${term}'; initExploreFilters(); renderExploreGrid();" 
                                     class="w-full px-4 py-2.5 text-left bg-white hover:bg-primary/5 border border-zinc-200 hover:border-primary/20 rounded-lg text-sm font-light text-dark transition-all hover:text-primary cursor-pointer flex items-center gap-2 group">
@@ -840,5 +850,29 @@ Object.assign(window, {
     viewVendor, executeSearch, quickSearch, setCategory, clearFilters, toggleSave, renderSaved, renderCategoriesPage,
     fuzzySearchVendors, findSuggestions, calculateSimilarity, levenshteinDistance
 });
+/**
+ * Creates and displays a toast notification
+ * @param {string} message - The message to display
+ */
+function showToast(message) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
 
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('toast-exit');
+        toast.addEventListener('animationend', () => {
+            toast.remove();
+        });
+    }, 3000);
+}
 })();
